@@ -46,11 +46,8 @@ export class UserService {
     try {
       // --- BƯỚC 3: LƯU VÀO DATABASE ---
       const saved = await this.userRepository.save(user);
-
-      // Xây dựng object trả về mà không bao gồm `password` (an toàn hơn,
-      // tránh việc dùng `delete` trên thuộc tính không-optional)
+      // Trả về thông tin user đã lưu, loại bỏ trường password khỏi kết quả trả về
       const { password, ...result } = saved;
-
       return result as User;
     } catch (error: unknown) {
       // --- BƯỚC 4: XỬ LÝ LỖI ---
