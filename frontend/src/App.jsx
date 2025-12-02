@@ -3,13 +3,14 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
+import { Toaster } from "@/components/ui/sonner";
 
 // Cấu hình React Query Client
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 function App() {
-  const isAuthenticated = !!localStorage.getItem("accessToken");
+  const isAuthenticated = !!localStorage.getItem("accessToken") || !!sessionStorage.getItem("accessToken");
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-gray-100">
@@ -32,6 +33,8 @@ function App() {
 
           <Route path="*" element={<NotFound />} />
         </Routes>
+
+        <Toaster />
       </div>
     </QueryClientProvider>
   );
