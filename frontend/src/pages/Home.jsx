@@ -1,54 +1,94 @@
+import { useNavigate } from "react-router-dom";
+import { LogOut, CheckCircle2, ShieldCheck } from "lucide-react"; // Import icon cho đẹp
+
+// Import các component của Shadcn
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+
 export default function Home() {
+  const navigate = useNavigate();
+
+  const today = new Date();
+  const formattedDate = today.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+  });
 
   const handleLogout = () => {
-    // 1. Xóa token
     localStorage.removeItem("accessToken");
-    // 2. Reload lại trang để App nhận diện lại là chưa đăng nhập -> Hiện Login
     window.location.reload();
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[80vh]">
-      {/* Card chính - giống layout Login/Register */}
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md border border-gray-200">
+    <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
+      
+      {/* Sử dụng Card của Shadcn */}
+      <Card className="w-full max-w-md shadow-2xl overflow-hidden border-none">
         
-        {/* Header - Tiêu đề chính */}
-        <h2 className="text-2xl font-bold text-center mb-2 text-gray-800">
-          Trang Chủ
-        </h2>
-        
-        {/* Sub-heading - Mô tả ngắn */}
-        <p className="text-center text-sm text-gray-600 mb-6">
-          Đây là trang Home demo cho bài IA03 – User Registration API với React Frontend.
-        </p>
+        {/* Banner màu */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-32 w-full"></div>
 
-        {/* Phần trạng thái đăng nhập giả lập */}
-        <div className="bg-green-50 border border-green-200 rounded-md p-4 mb-6">
-          <p className="text-sm text-green-700 text-center">
-            ✅ Bạn đã đăng nhập giả lập thành công từ màn hình Đăng Nhập.
-          </p>
-        </div>
+        <CardContent className="px-8 pb-8 flex flex-col items-center relative">
+          
+          {/* Avatar Shadcn */}
+          <div className="-mt-16 mb-4 rounded-full p-1.5 bg-white shadow-lg">
+            <Avatar className="h-28 w-28 border-4 border-white">
+              <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" />
+              <AvatarFallback>AD</AvatarFallback> {/* Hiện chữ AD nếu ảnh lỗi */}
+            </Avatar>
+          </div>
 
-        {/* Hướng dẫn sử dụng - Danh sách bullet */}
-        <div className="mb-6 space-y-2">
-          <p className="text-sm font-medium text-gray-700 mb-2">
-            Hướng dẫn sử dụng:
-          </p>
-          <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside">
-            <li>Bước 1: Đăng ký tài khoản ở trang Đăng Ký.</li>
-            <li>Bước 2: Thử đăng nhập giả lập ở trang Đăng Nhập.</li>
-            <li>Bước 3: Kiểm tra dữ liệu user mới trong database (Supabase).</li>
-          </ul>
-        </div>
+          <div className="text-center space-y-2">
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Admin User</h2>
+            <p className="text-sm font-medium text-gray-500">admin@gmail.com</p>
+            
+            {/* Badge Shadcn */}
+            <div className="flex justify-center gap-2 mt-3">
+              <Badge variant="secondary" className="bg-green-100 text-green-700 hover:bg-green-200 gap-1">
+                <CheckCircle2 size={12} /> Active
+              </Badge>
+              <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-200 gap-1">
+                <ShieldCheck size={12} /> Verified
+              </Badge>
+            </div>
+          </div>
 
-        {/* Nút Đăng xuất */}
-        <button
-          onClick={handleLogout}
-          className="w-full py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded-md font-medium"
-        >
-          Đăng xuất
-        </button>
-      </div>
+          <Separator className="my-6" />
+
+          {/* Thông tin chi tiết */}
+          <div className="w-full space-y-4">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500 font-medium">Role</span>
+              <span className="font-bold text-gray-900">Administrator</span>
+            </div>
+            <Separator />
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500 font-medium">Member since</span>
+              <span className="font-bold text-gray-900">{formattedDate}</span>
+            </div>
+            <Separator />
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500 font-medium">Last Login</span>
+              <span className="font-bold text-gray-900">Just now</span>
+            </div>
+          </div>
+
+          {/* Button Shadcn */}
+          <Button 
+            onClick={handleLogout} 
+            className="w-full mt-8 bg-slate-900 hover:bg-slate-800 gap-2"
+            size="lg"
+          >
+            <LogOut size={16} />
+            Đăng xuất
+          </Button>
+
+        </CardContent>
+      </Card>
     </div>
   );
 }
