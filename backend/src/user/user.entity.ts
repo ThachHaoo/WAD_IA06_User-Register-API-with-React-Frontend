@@ -22,6 +22,11 @@ export class User {
   @Column({ unique: true, nullable: false })
   email: string;
 
+  // Cột lưu mật khẩu.
+  // Lưu ý: Giá trị lưu ở đây là chuỗi Hash (đã mã hóa) dài ngoằng, KHÔNG PHẢI mật khẩu gốc "123456".
+  @Column({ nullable: false })
+  password: string;
+
   // @CreateDateColumn(): Cột đặc biệt dùng để Audit (ghi vết).
   // TypeORM sẽ TỰ ĐỘNG điền thời gian hiện tại ngay khoảnh khắc bản ghi được tạo ra.
   // Bạn không cần phải set giá trị cho trường này thủ công trong code.
