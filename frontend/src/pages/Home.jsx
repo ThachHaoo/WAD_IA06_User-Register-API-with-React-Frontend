@@ -1,6 +1,12 @@
-import { Link } from "react-router-dom";
-
 export default function Home() {
+
+  const handleLogout = () => {
+    // 1. Xóa token
+    localStorage.removeItem("accessToken");
+    // 2. Reload lại trang để App nhận diện lại là chưa đăng nhập -> Hiện Login
+    window.location.reload();
+  };
+
   return (
     <div className="flex justify-center items-center min-h-[80vh]">
       {/* Card chính - giống layout Login/Register */}
@@ -35,23 +41,13 @@ export default function Home() {
           </ul>
         </div>
 
-        {/* Nút điều hướng chính - Style giống nút Submit */}
-        <Link to="/login">
-          <button
-            type="button"
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Vào lại trang Đăng Nhập
-          </button>
-        </Link>
-
-        {/* Link phụ - Style giống phần "Chưa có tài khoản?" */}
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Chưa có tài khoản?{" "}
-          <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
-            Tạo tài khoản mới
-          </Link>
-        </p>
+        {/* Nút Đăng xuất */}
+        <button
+          onClick={handleLogout}
+          className="w-full py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded-md font-medium"
+        >
+          Đăng xuất
+        </button>
       </div>
     </div>
   );

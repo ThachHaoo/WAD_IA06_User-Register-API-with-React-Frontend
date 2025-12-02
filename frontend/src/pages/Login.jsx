@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react"; // Dùng local state để quản lý loading giả
+import { emailValidation, passwordValidation } from "../utils/validations";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -10,20 +11,21 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    mode: "onChange", // Kích hoạt validate ngay khi gõ
+    delayError: 300,
+  });
 
   // Hàm xử lý khi bấm nút Đăng nhập
-  const onSubmit = (data) => {
-    console.log("Dữ liệu đăng nhập:", data); // Log ra console chơi thôi
-    
-    // 1. Bật trạng thái loading
+  const onSubmit = () => {
     setIsFakeLoading(true);
 
-    // 2. Giả lập gọi server mất 1.5 giây (Mock logic)
     setTimeout(() => {
-      setIsFakeLoading(false); // Tắt loading
-      alert("Đăng nhập thành công! (Giả lập)"); // Thông báo giả [cite: 39]
-      navigate("/"); // 3. Chuyển hướng về trang chủ
+      setIsFakeLoading(false);
+      localStorage.setItem("accessToken", "token_gia_lap_123456"); 
+      alert("Đăng nhập thành công!");
+      navigate("/");
+      window.location.reload(); 
     }, 1500);
   };
 
@@ -41,13 +43,7 @@ export default function Login() {
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
-              {...register("email", { 
-                required: "Vui lòng nhập email", 
-                pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Email không hợp lệ"
-                }
-              })}
+              {...register("email", emailValidation)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="name@example.com"
             />
@@ -59,7 +55,7 @@ export default function Login() {
             <label className="block text-sm font-medium text-gray-700">Mật khẩu</label>
             <input
               type="password"
-              {...register("password", { required: "Vui lòng nhập mật khẩu" })}
+              {...register("password", passwordValidation)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="••••••"
             />

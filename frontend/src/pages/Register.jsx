@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axiosClient from "../api/axiosClient";
 import { Link, useNavigate } from "react-router-dom";
+import { emailValidation, passwordValidation } from "../utils/validations";
 
 export default function Register() {
   const navigate = useNavigate(); // Dùng để chuyển trang (NavigationService)
@@ -14,7 +15,10 @@ export default function Register() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    mode: "onChange", // Kích hoạt validate ngay khi gõ
+    delayError: 300,
+  });
 
   // 2. Setup API Call (React Query) [cite: 41]
   // mutationFn: Hàm thực thi gọi API
@@ -54,13 +58,7 @@ export default function Register() {
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
-              {...register("email", { 
-                required: "Email là bắt buộc", 
-                pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Email không đúng định dạng"
-                }
-              })}
+              {...register("email", emailValidation)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="name@example.com"
             />
@@ -73,10 +71,7 @@ export default function Register() {
             <label className="block text-sm font-medium text-gray-700">Mật khẩu</label>
             <input
               type="password"
-              {...register("password", { 
-                required: "Mật khẩu là bắt buộc",
-                minLength: { value: 6, message: "Mật khẩu phải từ 6 ký tự trở lên" } 
-              })}
+              {...register("password", passwordValidation)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="••••••"
             />
@@ -97,7 +92,7 @@ export default function Register() {
         {/* Link chuyển sang trang Login */}
         <p className="mt-4 text-center text-sm text-gray-600">
           Đã có tài khoản?{" "}
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+          <Link to="/" className="font-medium text-blue-600 hover:text-blue-500">
             Đăng nhập ngay
           </Link>
         </p>
