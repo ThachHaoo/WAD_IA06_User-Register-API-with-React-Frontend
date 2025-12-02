@@ -47,12 +47,11 @@ export class UserService {
       // --- BƯỚC 3: LƯU VÀO DATABASE ---
       const saved = await this.userRepository.save(user);
 
-      // Xóa trường password khỏi object trả về
-      // (Bảo mật: Không nên gửi hash password về lại cho Frontend)
-      // Lưu ý: Việc xóa này chỉ ảnh hưởng đến object trả về, dữ liệu trong DB vẫn còn
-      delete saved.password;
+      // Xây dựng object trả về mà không bao gồm `password` (an toàn hơn,
+      // tránh việc dùng `delete` trên thuộc tính không-optional)
+      const { password, ...result } = saved;
 
-      return saved;
+      return result as User;
     } catch (error: unknown) {
       // --- BƯỚC 4: XỬ LÝ LỖI ---
 
