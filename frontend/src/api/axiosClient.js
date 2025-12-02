@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:3000', // Địa chỉ Backend NestJS của bạn
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000', // Địa chỉ Backend NestJS của bạn
   headers: {
     'Content-Type': 'application/json',
   },
