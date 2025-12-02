@@ -10,22 +10,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 function App() {
-  const isAuthenticated = !!localStorage.getItem("accessToken") || !!sessionStorage.getItem("accessToken");
+  const isAuthenticated =
+    !!localStorage.getItem("accessToken") ||
+    !!sessionStorage.getItem("accessToken");
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-gray-100">
         {/* Nơi nội dung thay đổi theo trang */}
         <Routes>
-          <Route 
-            path="/" 
-            element={isAuthenticated ? <Home /> : <Login />} 
-          />
+          <Route path="/" element={isAuthenticated ? <Home /> : <Login />} />
 
           {/* Route Login riêng lẻ:
              Nếu đã đăng nhập rồi mà cố tình vào /login thì đá về Home luôn */}
-          <Route 
-            path="/login" 
-            element={isAuthenticated ? <Navigate to="/" /> : <Login />} 
+          <Route
+            path="/login"
+            element={isAuthenticated ? <Navigate to="/" /> : <Login />}
           />
 
           {/* Trang Register vẫn giữ nguyên đường dẫn riêng */}
@@ -34,7 +33,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
 
-        <Toaster />
+        <Toaster richColors position="top-center" />
       </div>
     </QueryClientProvider>
   );
