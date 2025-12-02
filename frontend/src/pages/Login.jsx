@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+// Import các quy tắc validate email/password từ file utils
 import { emailValidation, passwordValidation } from "../utils/validations";
-
-// Import Shadcn components
+// Import các UI component (thường là từ Shadcn UI)
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,49 +19,65 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function Login() {
+  // Hook dùng để điều hướng trang sau khi login thành công
   const navigate = useNavigate();
+  // State để quản lý hiệu ứng loading giả lập khi bấm nút login
   const [isFakeLoading, setIsFakeLoading] = useState(false);
 
+  // Khởi tạo useForm để quản lý form
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    watch,
+    register, // Hàm dùng để đăng ký input vào form hook
+    handleSubmit, // Hàm xử lý khi submit form
+    formState: { errors }, // Object chứa các lỗi validation
+    setValue, // Hàm set giá trị thủ công cho form (dùng cho Checkbox)
+    watch, // Hàm theo dõi sự thay đổi giá trị của field
   } = useForm({
-    mode: "onChange",
-    delayError: 300,
+    mode: "onChange", // Validate ngay khi người dùng nhập liệu (thay vì lúc submit)
+    delayError: 300, // Đợi 300ms sau khi dừng gõ mới báo lỗi (tránh báo lỗi liên tục)
   });
 
+  // Theo dõi giá trị thực tế của checkbox "Ghi nhớ đăng nhập"
   const isRemembered = watch("remember");
 
+  // Hàm xử lý logic khi form hợp lệ và được submit
   const onSubmit = () => {
+    // Bật trạng thái loading
     setIsFakeLoading(true);
+
+    // Giả lập độ trễ mạng 1.5 giây
     setTimeout(() => {
       setIsFakeLoading(false);
+      // Token giả lập (trong thực tế sẽ nhận từ API response)
       const token = "token_gia_lap_123456";
 
-      // 4. LOGIC QUAN TRỌNG Ở ĐÂY:
+      // LOGIC QUAN TRỌNG: Xử lý "Ghi nhớ đăng nhập"
       if (isRemembered) {
-        // Nếu tích -> Lưu vào localStorage (Vĩnh viễn)
+        // Nếu chọn ghi nhớ: Lưu vào LocalStorage (lưu trữ lâu dài kể cả khi tắt browser)
         localStorage.setItem("accessToken", token);
       } else {
-        // Nếu không tích -> Lưu vào sessionStorage (Mất khi tắt tab)
+        // Nếu không chọn: Lưu vào SessionStorage (mất đi khi đóng tab/browser)
         sessionStorage.setItem("accessToken", token);
       }
+
+      // Hiển thị thông báo thành công
       toast.success("Chào mừng trở lại! 👋", {
         description: "Đăng nhập thành công. Đang chuyển hướng...",
         duration: 3000,
       });
+
+      // Chuyển hướng về trang chủ sau 1 giây
       setTimeout(() => {
         navigate("/");
+        // Reload lại trang để cập nhật state xác thực trên toàn app
         window.location.reload();
-      }, 1000); // Delay 1s
+      }, 1000);
     }, 1500);
   };
 
   return (
+    // Container chính: căn giữa màn hình, nền xám nhẹ
     <div className="flex justify-center items-center min-h-screen bg-gray-50 px-4">
+      {/* Card chứa form: có animation xuất hiện */}
       <Card className="w-full max-w-md border border-gray-200 shadow-md animate-in fade-in zoom-in-95 duration-700">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold tracking-tight">
@@ -73,22 +89,25 @@ export default function Login() {
         </CardHeader>
 
         <CardContent>
+          {/* Form wrapper: sử dụng handleSubmit từ useForm */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Input Email */}
+            {/* --- Input Email --- */}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="name@example.com"
+                // Kết nối input với react-hook-form và quy tắc validate
                 {...register("email", emailValidation)}
-                // Input của Shadcn hỗ trợ class lỗi rất hay
+                // Đổi màu viền thành đỏ nếu có lỗi
                 className={
                   errors.email
                     ? "border-red-500 focus-visible:ring-red-500"
                     : ""
                 }
               />
+              {/* Hiển thị dòng thông báo lỗi nếu có */}
               {errors.email && (
                 <p className="text-red-500 text-xs font-medium">
                   {errors.email.message}
@@ -96,7 +115,7 @@ export default function Login() {
               )}
             </div>
 
-            {/* Input Password */}
+            {/* --- Input Password --- */}
             <div className="space-y-2">
               <Label htmlFor="password">Mật khẩu</Label>
               <Input
@@ -117,9 +136,11 @@ export default function Login() {
               )}
             </div>
 
+            {/* --- Checkbox Ghi nhớ đăng nhập --- */}
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="remember"
+                // Vì Shadcn Checkbox là custom component, cần dùng onCheckedChange để cập nhật value thủ công vào form
                 onCheckedChange={(checked) => setValue("remember", checked)}
               />
               <Label
@@ -130,9 +151,10 @@ export default function Login() {
               </Label>
             </div>
 
-            {/* Nút Submit */}
+            {/* --- Nút Submit --- */}
             <Button className="w-full" type="submit" disabled={isFakeLoading}>
               {isFakeLoading ? (
+                // Hiển thị Spinner khi đang xử lý
                 <>
                   <Spinner className="mr-2" />
                   Đang kiểm tra...
@@ -144,6 +166,7 @@ export default function Login() {
           </form>
         </CardContent>
 
+        {/* Footer chuyển hướng trang Đăng ký */}
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
             Chưa có tài khoản?{" "}
